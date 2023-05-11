@@ -31,20 +31,20 @@ type Order struct {
 	BillingAddress2           string  `json:"Billing Address2"`
 	BillingCompany            string  `json:"Billing Company"`
 	BillingCity               string  `json:"Billing City"`
-	BillingZip                string  `json:"Billing Zip"`
+	BillingZip                int     `json:"Billing Zip"`
 	BillingProvince           string  `json:"Billing Province"`
 	BillingCountry            string  `json:"Billing Country"`
-	BillingPhone              string  `json:"Billing Phone"`
+	BillingPhone              int     `json:"Billing Phone"`
 	ShippingName              string  `json:"Shipping Name"`
 	ShippingStreet            string  `json:"Shipping Street"`
 	ShippingAddress1          string  `json:"Shipping Address1"`
 	ShippingAddress2          string  `json:"Shipping Address2"`
 	ShippingCompany           string  `json:"Shipping Company"`
 	ShippingCity              string  `json:"Shipping City"`
-	ShippingZip               string  `json:"Shipping Zip"`
+	ShippingZip               int     `json:"Shipping Zip"`
 	ShippingProvince          string  `json:"Shipping Province"`
 	ShippingCountry           string  `json:"Shipping Country"`
-	ShippingPhone             string  `json:"Shipping Phone"`
+	ShippingPhone             int     `json:"Shipping Phone"`
 	Notes                     string  `json:"Notes"`
 	NoteAttributes            string  `json:"Note Attributes"`
 	CancelledAt               string  `json:"Cancelled at"`
