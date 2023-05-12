@@ -1,0 +1,131 @@
+{
+  "Type": "*fyne.Container",
+  "Layout": "Grid",
+  "Name": "layoutVerticalBox",
+  "Objects": [
+    {
+      "Type": "*fyne.Container",
+      "Layout": "Grid",
+      "Name": "topContainer",
+      "Objects": [
+        {
+          "Type": "*fyne.Container",
+          "Layout": "HBox",
+          "Name": "buttonContainer",
+          "Objects": [
+            {
+              "Type": "*widget.Button",
+              "Name": "filterButton",
+              "Struct": {
+                "Hidden": false,
+                "Text": "filter",
+                "Icon": "ConfirmIcon",
+                "Importance": 0,
+                "Alignment": 0,
+                "IconPlacement": 0
+              }
+            },
+            {
+              "Type": "*widget.Button",
+              "Name": "fulfilledChangeButton",
+              "Struct": {
+                "Hidden": false,
+                "Text": "Status Update",
+                "Icon": "ConfirmIcon",
+                "Importance": 0,
+                "Alignment": 0,
+                "IconPlacement": 0
+              }
+            },
+            {
+              "Type": "*widget.RadioGroup",
+              "Name": "radioGroup1",
+              "Struct": {
+                "Hidden": false,
+                "Horizontal": false,
+                "Required": false,
+                "Options": [
+                  "Ascending",
+                  "Descending"
+                ],
+                "Selected": "Descending"
+              }
+            },
+            {
+              "Type": "*widget.Select",
+              "Name": "selectorB",
+              "Struct": {
+                "Hidden": false,
+                "Alignment": 0,
+                "Selected": "DEFAULT (Recent Order)",
+                "Options": [
+                  "DEFAULT (Recent Order)",
+                  "Date",
+                  "Customer Name",
+                  "Address"
+                ],
+                "PlaceHolder": "(Select one)"
+              }
+            }
+          ],
+          "Properties": {
+            "dir": "horizontal",
+            "layout": "HBox"
+          }
+        },
+        {
+          "Type": "*fyne.Container",
+          "Layout": "Max",
+          "Name": "progressBar",
+          "Objects": [
+            {
+              "Type": "*widget.ProgressBar",
+              "Name": "pBar",
+              "Struct": {
+                "Hidden": false,
+                "Min": 0,
+                "Max": 1,
+                "Value": 0
+              }
+            }
+          ],
+          "Properties": {
+            "layout": "Max"
+          }
+        }
+      ],
+      "Properties": {
+        "count": "2",
+        "dir": "horizontal",
+        "grid_type": "Rows",
+        "height": "200",
+        "layout": "Grid",
+        "width": "200"
+      }
+    },
+    {
+      "Type": "*fyne.Container",
+      "Layout": "Max",
+      "Name": "bottomContainer",
+      "Objects": [
+        {
+          "Type": "*widget.List",
+          "Name": "listItem",
+          "Struct": {
+            "Hidden": false
+          }
+        }
+      ],
+      "Properties": {
+        "dir": "vertical",
+        "layout": "Max"
+      }
+    }
+  ],
+  "Properties": {
+    "count": "2",
+    "dir": "vertical",
+    "grid_type": "Rows",
+    "layout": "Grid"
+  }
+}
