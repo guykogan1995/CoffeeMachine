@@ -38,7 +38,7 @@ func (ordersInput *OrderArray) GetOrderNames() (string, error) {
 		if order.Name == "" {
 			break
 		}
-		str += fmt.Sprintf(order.Name+" Total: $%.2f"+"\n", order.Total)
+		str += fmt.Sprintf("ID: "+order.Name+"\n\tCustomer name: %s\n\tTotal: $%.2f\n\tAddress: %s\n\tFullfillmentStatus: %s"+"\n", order.ShippingName, order.Total, order.ShippingAddress1, order.FulfillmentStatus)
 	}
 	return str, nil
 }
@@ -95,6 +95,28 @@ func (ordersInput *OrderArray) SortBy(upordown string, attribute string) OrderAr
 			})
 		}
 		return Orders
+	case "customer name":
+		if upordown == "ascending" {
+			sort.Slice(*ordersInput, func(i, j int) bool {
+				return (*ordersInput)[i].ShippingName <= (*ordersInput)[j].ShippingName
+			})
+		} else if upordown == "descending" {
+			sort.Slice(*ordersInput, func(i, j int) bool {
+				return (*ordersInput)[i].ShippingName >= (*ordersInput)[j].ShippingName
+			})
+		}
+		return Orders
+	case "address":
+		if upordown == "ascending" {
+			sort.Slice(*ordersInput, func(i, j int) bool {
+				return (*ordersInput)[i].ShippingAddress1 <= (*ordersInput)[j].ShippingAddress1
+			})
+		} else if upordown == "descending" {
+			sort.Slice(*ordersInput, func(i, j int) bool {
+				return (*ordersInput)[i].ShippingAddress1 >= (*ordersInput)[j].ShippingAddress1
+			})
+		}
+		return Orders
 	default:
 		return Orders
 	}
@@ -110,4 +132,31 @@ func GetFulfilledOrders() OrderArray {
 
 func GetOrdersByName(cName string) OrderArray {
 	return Filter(Orders, ByCustomerName(cName))
+}
+
+// ChangeStatus This function allows a user of the program
+// To change the fulfillment status of an order to either
+// "fulfilled" or "unfulfilled". Additionally, an order name
+// is required to which order a user wants to change by the
+// unique ticket name identifier
+func (ordersInput *OrderArray) ChangeStatus(newStatus string, orderName string) {
+	isSet := false
+	for i, order := range *ordersInput {
+		if order.Name == orderName {
+			switch newStatus {
+			case "fulfilled":
+				(*ordersInput)[i].FulfillmentStatus = "fulfilled"
+				isSet = true
+			case "unfulfilled":
+				(*ordersInput)[i].FulfillmentStatus = "unfulfilled"
+				isSet = true
+			default:
+				log.Fatal("Command was not understood")
+			}
+			break
+		}
+	}
+	if !isSet {
+		log.Fatalf("No orderName of %s exists", orderName)
+	}
 }

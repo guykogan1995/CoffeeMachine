@@ -10,7 +10,7 @@ import (
 )
 
 func ParseJSON() ([]OrderStruct.Order, error) {
-	jsonFile, err := os.Open("fulfilled_data.json")
+	jsonFile, err := os.Open("LARGER_ORDERS2.json")
 	var orders []OrderStruct.Order
 	if err != nil {
 		return orders, errors.New(fmt.Sprintf("There was an error opening the json. error = %s", err))
