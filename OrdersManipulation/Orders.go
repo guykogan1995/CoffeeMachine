@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"sort"
+	"strings"
 )
 
 var err error
@@ -45,6 +46,7 @@ func (ordersInput *OrderArray) GetOrderNames() (string, error) {
 
 func Filter(in OrderArray, predicate func(order OrderStruct.Order) bool) OrderArray {
 	var filtered OrderArray
+	filtered = OrderArray{}
 	for _, v := range in {
 		if predicate(v) {
 			filtered = append(filtered, v)
@@ -61,7 +63,13 @@ func ByUnFulfillment() func(order OrderStruct.Order) bool {
 
 func ByCustomerName(cName string) func(order OrderStruct.Order) bool {
 	return func(o OrderStruct.Order) bool {
-		return o.ShippingName == cName
+		return strings.Contains(strings.ToLower(o.ShippingName), strings.ToLower(cName))
+	}
+}
+
+func ByItemName(item string) func(order OrderStruct.Order) bool {
+	return func(o OrderStruct.Order) bool {
+		return strings.Contains(strings.ToLower(o.LineitemName), strings.ToLower(item))
 	}
 }
 
@@ -83,7 +91,7 @@ func (ordersInput *OrderArray) SortBy(upordown string, attribute string) OrderAr
 				return (*ordersInput)[i].Total > (*ordersInput)[j].Total
 			})
 		}
-		return Orders
+		return *ordersInput
 	case "date":
 		if upordown == "ascending" {
 			sort.Slice(*ordersInput, func(i, j int) bool {
@@ -94,7 +102,7 @@ func (ordersInput *OrderArray) SortBy(upordown string, attribute string) OrderAr
 				return (*ordersInput)[i].CreatedAt > (*ordersInput)[j].CreatedAt
 			})
 		}
-		return Orders
+		return *ordersInput
 	case "customer name":
 		if upordown == "ascending" {
 			sort.Slice(*ordersInput, func(i, j int) bool {
@@ -105,7 +113,7 @@ func (ordersInput *OrderArray) SortBy(upordown string, attribute string) OrderAr
 				return (*ordersInput)[i].ShippingName >= (*ordersInput)[j].ShippingName
 			})
 		}
-		return Orders
+		return *ordersInput
 	case "address":
 		if upordown == "ascending" {
 			sort.Slice(*ordersInput, func(i, j int) bool {
@@ -116,9 +124,9 @@ func (ordersInput *OrderArray) SortBy(upordown string, attribute string) OrderAr
 				return (*ordersInput)[i].ShippingAddress1 >= (*ordersInput)[j].ShippingAddress1
 			})
 		}
-		return Orders
+		return *ordersInput
 	default:
-		return Orders
+		return *ordersInput
 	}
 }
 
@@ -130,8 +138,12 @@ func GetFulfilledOrders() OrderArray {
 	return Filter(Orders, ByFulfillment())
 }
 
-func GetOrdersByName(cName string) OrderArray {
+func (ordersInput *OrderArray) GetOrdersByName(cName string) OrderArray {
 	return Filter(Orders, ByCustomerName(cName))
+}
+
+func (ordersInput *OrderArray) GetOrdersByItemName(item string) OrderArray {
+	return Filter(Orders, ByItemName(item))
 }
 
 // ChangeStatus This function allows a user of the program
