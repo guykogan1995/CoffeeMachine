@@ -6,7 +6,6 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"strings"
@@ -23,7 +22,7 @@ type gui struct {
 	selectorB             *widget.Select
 	selectorB2            *widget.Select
 	progressBar           *fyne.Container
-	pBar                  *widget.ProgressBar
+	pBar                  *widget.TextGrid
 	bottomContainer       *fyne.Container
 	listItem              *widget.List
 	entryBox              *widget.Form
@@ -74,34 +73,10 @@ func (g *gui) makeUI() fyne.CanvasObject {
 	})
 	g.radioGroup1.SetSelected("Descending")
 	g.selectorB = widget.NewSelect([]string{"Date", "Customer Name", "Address", "Total"}, func(s string) {
-		orderBy = s
-		switch orderBy {
-		case "Customer Name":
-			orderBy = "customer name"
-		case "Address":
-			orderBy = "address"
-		case "Date":
-			orderBy = "date"
-		case "Total":
-			orderBy = "total"
-		default:
-			orderBy = "date"
-		}
+		orderBy = strings.ToLower(s)
 	})
 	g.selectorB2 = widget.NewSelect([]string{"Date", "Customer Name", "Address", "Item Name"}, func(s string) {
-		searchBy = s
-		switch searchBy {
-		case "Customer Name":
-			searchBy = "customer name"
-		case "Address":
-			searchBy = "address"
-		case "Date":
-			searchBy = "date"
-		case "Item Name":
-			searchBy = "item name"
-		default:
-			searchBy = "customer name"
-		}
+		searchBy = strings.ToLower(s)
 	})
 	g.selectorB.SetSelected("Date")
 	g.selectorB2.SetSelected("Customer Name")
@@ -113,18 +88,32 @@ func (g *gui) makeUI() fyne.CanvasObject {
 		g.entryBox,
 		g.selectorB2,
 		g.loginBox)
-	g.pBar = &widget.ProgressBar{Value: 0.000000}
+	g.pBar = widget.NewTextGrid()
+	g.pBar.SetText(fmt.Sprintf("%s %13s %47s %18s %8s %14s", "ID:", "Item:", "SKU:", "Quantity:", "Status:", "Value:"))
 	g.progressBar = container.NewMax(
 		g.pBar)
 	g.listItem = widget.NewList(func() int { return len(myList) }, func() fyne.CanvasObject {
-		return container.New(layout.NewHBoxLayout(), widget.NewIcon(theme.DocumentIcon()), widget.NewLabel("Template Object"))
+		return container.NewMax(
+			widget.NewButton("", nil),
+		)
 	}, func(id widget.ListItemID, item fyne.CanvasObject) {
-		item.(*fyne.Container).Objects[1].(*widget.Label).SetText(strings.TrimSpace(strings.ReplaceAll(fmt.Sprintf("ID: %s\tItem:  %.10s\tItemSKU: %s\tQuantity: %.1f\tStatus: %s\tTotal: $%.2f", myList[id].Name, myList[id].LineitemName, myList[id].LineitemSku, myList[id].LineitemQuantity, myList[id].FulfillmentStatus, myList[id].Total), "\n", "")))
+		itemStr := fmt.Sprintf("%s  %s  %s  %.1f  %s  $%.2f", truncateText(myList[id].Name, 11), truncateText(myList[id].LineitemName, 48), strings.TrimSpace(truncateText(myList[id].LineitemSku, 5)), myList[id].LineitemQuantity, myList[id].FulfillmentStatus, myList[id].Total)
+		itemStr = strings.ReplaceAll(itemStr, "\n", "")
+		item.(*fyne.Container).Objects[0].(*widget.Button).Alignment = widget.ButtonAlignLeading
+		item.(*fyne.Container).Objects[0].(*widget.Button).SetText(itemStr)
+		item.(*fyne.Container).Objects[0].(*widget.Button).OnTapped = func() {
+			//item.(*fyne.Container).Objects[0].(*widget.Button).Text
+			g.pBar.SetText(g.pBar.Text() + "\n" + itemStr)
+		}
+		println(itemStr)
 	})
+	searchStr = fmt.Sprintf("%s %10s %49s %25s %14s %14s", "ID:", "Item:", "SKU:", "Quantity:", "Status:", "Value:")
+	println(searchStr)
 	g.topContainer = container.NewGridWithRows(2,
 		g.buttonContainer,
 		g.progressBar)
-	g.bottomContainer = container.NewMax(
+	g.bottomContainer = container.NewBorder(widget.NewLabel(searchStr), nil, nil,
+		nil,
 		g.listItem)
 	g.layoutVerticalBox = container.NewGridWithRows(2,
 		g.topContainer,
@@ -134,7 +123,12 @@ func (g *gui) makeUI() fyne.CanvasObject {
 }
 
 func truncateText(s string, max int) string {
-	return s[:max]
+	if max > len(s) {
+		s = fmt.Sprintf("%s%s", s, strings.Repeat(" ", max-len(s)-1))
+	} else {
+		s = s[:max]
+	}
+	return s
 }
 
 func main() {
