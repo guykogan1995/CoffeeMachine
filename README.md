@@ -29,4 +29,4 @@ This project showcases my ability to build a complex system that integrates with
 Contributions are welcome! Please open an issue or submit a pull request if you have any suggestions or improvements.
 
 ## License
-This project is licensed under the Commercial License. See the [LICENSE][(https://github.com/yourusername/yourproject/blob/master/LICENSE](https://github.com/guykogan1995/CoffeeMachine/blob/main/LICENSE)) file for details.
+This project is licensed under the Commercial License. See the [LICENSE][(https://github.com/guykogan1995/CoffeeMachine/blob/main/LICENSE](https://github.com/guykogan1995/CoffeeMachine/blob/main/LICENSE)) file for details.
