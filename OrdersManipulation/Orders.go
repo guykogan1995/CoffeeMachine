@@ -57,7 +57,7 @@ func Filter(in OrderArray, predicate func(order OrderStruct.Order) bool) OrderAr
 
 func ByUnFulfillment() func(order OrderStruct.Order) bool {
 	return func(o OrderStruct.Order) bool {
-		return o.FulfillmentStatus == "unfulfilled" || o.FulfillmentStatus == ""
+		return o.FulfillmentStatus == "unfulfilled"
 	}
 }
 
@@ -130,20 +130,20 @@ func (ordersInput *OrderArray) SortBy(upordown string, attribute string) OrderAr
 	}
 }
 
-func GetUnFulfilledOrders() OrderArray {
-	return Filter(Orders, ByUnFulfillment())
+func (ordersInput *OrderArray) GetUnFulfilledOrders() OrderArray {
+	return Filter(*ordersInput, ByUnFulfillment())
 }
 
-func GetFulfilledOrders() OrderArray {
-	return Filter(Orders, ByFulfillment())
+func (ordersInput *OrderArray) GetFulfilledOrders() OrderArray {
+	return Filter(*ordersInput, ByFulfillment())
 }
 
 func (ordersInput *OrderArray) GetOrdersByName(cName string) OrderArray {
-	return Filter(Orders, ByCustomerName(cName))
+	return Filter(*ordersInput, ByCustomerName(cName))
 }
 
 func (ordersInput *OrderArray) GetOrdersByItemName(item string) OrderArray {
-	return Filter(Orders, ByItemName(item))
+	return Filter(*ordersInput, ByItemName(item))
 }
 
 // ChangeStatus This function allows a user of the program

@@ -5,7 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
+	"log"
 	"os"
 )
 
@@ -15,9 +16,13 @@ func ParseJSON() ([]OrderStruct.Order, error) {
 	if err != nil {
 		return orders, errors.New(fmt.Sprintf("There was an error opening the json. error = %s", err))
 	}
-	fmt.Println("Successfully Opened json file")
-	defer jsonFile.Close()
-	byteValue, err := ioutil.ReadAll(jsonFile)
+	defer func(jsonFile *os.File) {
+		err := jsonFile.Close()
+		if err != nil {
+			log.Fatal("Was unable to close JSON File")
+		}
+	}(jsonFile)
+	byteValue, err := io.ReadAll(jsonFile)
 	if err != nil {
 		return orders, errors.New(fmt.Sprintf("There was an error closing the json. error = %s", err))
 	}
