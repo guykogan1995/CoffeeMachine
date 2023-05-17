@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"golang.org/x/image/colornames"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -161,17 +162,17 @@ func (g *gui) makeUI() fyne.CanvasObject {
 	tGrid.SetText(searchStr)
 	g.pBar.SetText(searchStr)
 	g.progressBar = container.NewBorder(nil, canvas.NewRectangle(colornames.Gray), nil, nil, container.NewScroll(g.pBar))
-	g.listItem = widget.NewList(func() int { return len(myList2) }, func() fyne.CanvasObject {
+	g.listItem = widget.NewList(func() int { return len(myList2.Orders) }, func() fyne.CanvasObject {
 		return container.NewMax(
 			widget.NewTextGridFromString(""),
 		)
 	}, func(id widget.ListItemID, item fyne.CanvasObject) {
-		itemStr := fmt.Sprintf("%s  %s  \t%s  \t%.1f  \t\t%s  \t$%.2f \t%s", truncateText(myList2[id].Name, 11), truncateText(strings.TrimSpace(myList2[id].LineitemName), 48), truncateText(strings.TrimSpace(myList2[id].LineitemSku), 17), myList2[id].LineitemQuantity, truncateText(myList2[id].FulfillmentStatus, 11), myList2[id].Total, truncateText(myList2[id].ShippingName, 15))
+		itemStr := fmt.Sprintf("%s  %s  \t%s  \t%d  \t\t%s  \t$%s \t%s", truncateText(strconv.Itoa(int(myList2.Orders[id].ID)), 11), truncateText(strings.TrimSpace(myList2.Orders[id].LineItems[0].Name), 48), truncateText(strings.TrimSpace(myList2.Orders[id].LineItems[0].SKU), 17), myList2.Orders[id].LineItems[0].Quantity, truncateText(fmt.Sprintf("%v", myList2.Orders[id].FulfillmentStatus), 11), myList2.Orders[id].TotalPrice, truncateText(myList2.Orders[id].Customer.FirstName+" "+myList2.Orders[id].Customer.LastName, 15))
 		itemStr = strings.ReplaceAll(itemStr, "\n", "")
 		item.(*fyne.Container).Objects[0].(*widget.TextGrid).SetText(itemStr)
 	})
 	g.listItem.OnSelected = func(id widget.ListItemID) {
-		itemStr := fmt.Sprintf("%s  %s  \t%s  \t%.1f  \t\t%s  \t$%.2f \t%s", truncateText(myList2[id].Name, 11), truncateText(strings.TrimSpace(myList2[id].LineitemName), 48), truncateText(strings.TrimSpace(myList2[id].LineitemSku), 17), myList2[id].LineitemQuantity, truncateText(myList2[id].FulfillmentStatus, 11), myList2[id].Total, truncateText(myList2[id].ShippingName, 15))
+		itemStr := fmt.Sprintf("%s  %s  \t%s  \t%d  \t\t%s  \t$%s \t%s", truncateText(strconv.Itoa(int(myList2.Orders[id].ID)), 11), truncateText(strings.TrimSpace(myList2.Orders[id].LineItems[0].Name), 48), truncateText(strings.TrimSpace(myList2.Orders[id].LineItems[0].SKU), 17), myList2.Orders[id].LineItems[0].Quantity, truncateText(fmt.Sprintf("%v", myList2.Orders[id].FulfillmentStatus), 11), myList2.Orders[id].TotalPrice, truncateText(myList2.Orders[id].Customer.FirstName+" "+myList2.Orders[id].Customer.LastName, 15))
 		itemStr = strings.ReplaceAll(itemStr, "\n", "")
 		g.pBar.SetText(g.pBar.Text() + "\n" + itemStr)
 	}
